@@ -2,6 +2,7 @@
 const myForm = document.querySelector('#my-form');
 const nameInput = document.querySelector('#name');
 const emailInput = document.querySelector('#email');
+const phoneInput = document.querySelector('#phone');
 const msg = document.querySelector('.msg');
 const userList = document.querySelector('#users');
 
@@ -11,7 +12,7 @@ myForm.addEventListener('submit', onSubmit);
 function onSubmit(e) {
   e.preventDefault();
   
-  if(nameInput.value === '' || emailInput.value === '') {
+  if(nameInput.value === '' || emailInput.value === '' || phoneInput.value === '') {
     // alert('Please enter all fields');
     msg.classList.add('error');
     msg.innerHTML = 'Please enter all fields';
@@ -22,18 +23,22 @@ function onSubmit(e) {
     // Create a user object
     const user = {
       name: nameInput.value,
-      email: emailInput.value
+      email: emailInput.value,
+      phone: phoneInput.value
     };
 
-    // Convert the user object to a JSON string
-    const userJSON = JSON.stringify(user);
+     // Retrieve the existing user data from local storage or initialize an empty array
+     let users = JSON.parse(localStorage.getItem('users')) || [];
 
-    // Store the user data in local storage
-    localStorage.setItem('user', userJSON);
+     // Add the new user to the array
+     users.push(user);
+ 
+     // Convert the array to a JSON string and store it in local storage
+     localStorage.setItem('users', JSON.stringify(users));
 
     // Create a new list item with user details
     const li = document.createElement('li');
-    li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
+    li.appendChild(document.createTextNode(`${user.name}: ${user.email}: ${user.phone}`));
 
     // Add HTML
     // li.innerHTML = `<strong>${nameInput.value}</strong>e: ${emailInput.value}`;
@@ -44,5 +49,6 @@ function onSubmit(e) {
     // Clear fields
     nameInput.value = '';
     emailInput.value = '';
+    phoneInput.value = '';
   }
 }
