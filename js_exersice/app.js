@@ -19,12 +19,21 @@ function onSubmit(e) {
     // Remove error after 3 seconds
     setTimeout(() => msg.remove(), 3000);
   } else {
-    // Create new list item with user
-    const li = document.createElement('li');
+    // Create a user object
+    const user = {
+      name: nameInput.value,
+      email: emailInput.value
+    };
 
-    // Add text node with input values
-    const userDetails = `${nameInput.value}: ${emailInput.value}`;
-    li.appendChild(document.createTextNode(userDetails));
+    // Convert the user object to a JSON string
+    const userJSON = JSON.stringify(user);
+
+    // Store the user data in local storage
+    localStorage.setItem('user', userJSON);
+
+    // Create a new list item with user details
+    const li = document.createElement('li');
+    li.appendChild(document.createTextNode(`${user.name}: ${user.email}`));
 
     // Add HTML
     // li.innerHTML = `<strong>${nameInput.value}</strong>e: ${emailInput.value}`;
@@ -35,6 +44,5 @@ function onSubmit(e) {
     // Clear fields
     nameInput.value = '';
     emailInput.value = '';
-    localStorage.setItem('users', userDetails);
   }
 }
