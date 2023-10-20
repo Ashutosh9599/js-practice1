@@ -8,11 +8,14 @@ const userList = document.querySelector('#users');
 
 // Listen for form submit
 myForm.addEventListener('submit', onSubmit);
+// Delete event
+userList.addEventListener('click', removeItem);
+
 
 function onSubmit(e) {
   e.preventDefault();
-  
-  if(nameInput.value === '' || emailInput.value === '' || phoneInput.value === '') {
+
+  if (nameInput.value === '' || emailInput.value === '' || phoneInput.value === '') {
     // alert('Please enter all fields');
     msg.classList.add('error');
     msg.innerHTML = 'Please enter all fields';
@@ -21,24 +24,27 @@ function onSubmit(e) {
     setTimeout(() => msg.remove(), 3000);
   } else {
     // Create a user object
-    const user = {
+    const userData = {
       name: nameInput.value,
       email: emailInput.value,
       phone: phoneInput.value
     };
 
-     // Retrieve the existing user data from local storage or initialize an empty array
-     let users = JSON.parse(localStorage.getItem('users')) || [];
+   // Convert the object to a string and store it
+    localStorage.setItem(emailInput.value, JSON.stringify(userData));
 
-     // Add the new user to the array
-     users.push(user);
- 
-     // Convert the array to a JSON string and store it in local storage
-     localStorage.setItem('users', JSON.stringify(users));
-
+    
     // Create a new list item with user details
     const li = document.createElement('li');
-    li.appendChild(document.createTextNode(`${user.name}: ${user.email}: ${user.phone}`));
+    li.appendChild(document.createTextNode(`${userData.name}: ${userData.email}: ${userData.phone}`));
+
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'delete';
+    li.appendChild(deleteButton);
+
+   
 
     // Add HTML
     // li.innerHTML = `<strong>${nameInput.value}</strong>e: ${emailInput.value}`;
@@ -50,5 +56,22 @@ function onSubmit(e) {
     nameInput.value = '';
     emailInput.value = '';
     phoneInput.value = '';
+  }
+  
+}
+
+// Remove item
+function removeItem(e) {
+  if (e.target.classList.contains('delete')) {
+      if (confirm('Are You Sure?')) {
+          var li = e.target.parentElement;
+          userList.removeChild(li);
+
+      // Get the email from the list item's text content
+      const email = li.textContent.split(':')[1].trim();
+
+      // Remove the corresponding data from localStorage
+      localStorage.removeItem(email);
+      }
   }
 }
