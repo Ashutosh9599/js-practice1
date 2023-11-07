@@ -6,22 +6,18 @@ const phoneInput = document.querySelector('#phone');
 const msg = document.querySelector('.msg');
 const userList = document.querySelector('#users');
 
-// Function to fetch and display data from the cloud
-function fetchAndDisplayData() {
+window.addEventListener('DOMContentLoaded', () => {
   axios
     .get('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId')
     .then((res) => {
-      const usersData = res.data;
-      for (const email in usersData) {
-        const userData = usersData[email];
-        addUserToList(userData);
+      console.log(res)
+      for(var i =0; i< res.data.length; i++){
+        addUserToList(res.data[i])
       }
     })
     .catch((err) => console.log(err));
-}
+});
 
-// Call the function to fetch and display data when the page loads
-fetchAndDisplayData();
 
 // Listen for form submit
 myForm.addEventListener('submit', onSubmit);
@@ -70,6 +66,7 @@ function onSubmit(e) {
 }
 
 function addUserToList(userData) {
+  // Create a new list item with user details
   const li = document.createElement('li');
   li.appendChild(document.createTextNode(`${userData.name}: ${userData.email}: ${userData.phone}`));
 
@@ -83,6 +80,7 @@ function addUserToList(userData) {
   editButton.className = 'edit';
   li.appendChild(editButton);
 
+  // Append to ul
   userList.appendChild(li);
 }
 
