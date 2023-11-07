@@ -6,68 +6,28 @@ const phoneInput = document.querySelector('#phone');
 const msg = document.querySelector('.msg');
 const userList = document.querySelector('#users');
 
-window.addEventListener('DOMContentLoaded', () => {
+// Function to fetch and display data from the cloud
+function fetchAndDisplayData() {
   axios
     .get('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId')
     .then((res) => {
-      console.log(res)
-      for(var i =0; i< res.data.length; i++){
-        addUserToList(res.data[i])
+      const usersData = res.data;
+      for (var i = 0; i < res.data.length; i++) {
+        const userData = usersData[i];
+        addUserToList(userData);
       }
     })
     .catch((err) => console.log(err));
-});
-
-
-// Listen for form submit
-myForm.addEventListener('submit', onSubmit);
-// Delete event
-userList.addEventListener('click', removeItem);
-// Delete event
-userList.addEventListener('click', editItem);
-
-
-function onSubmit(e) {
-  e.preventDefault();
-
-  if (nameInput.value === '' || emailInput.value === '' || phoneInput.value === '') {
-    // alert('Please enter all fields');
-    msg.classList.add('error');
-    msg.innerHTML = 'Please enter all fields';
-
-    // Remove error after 3 seconds
-    setTimeout(() => msg.remove(), 3000);
-  } else {
-    // Create a user object
-    const userData = {
-      name: nameInput.value,
-      email: emailInput.value,
-      phone: phoneInput.value
-    };
-
-    axios
-    .post('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId',userData )
-    .then((res) => {
-      console.log(res);
-      addUserToList(userData);
-    })
-    .catch(err => console.log(err));
-
-
-    // // Convert the object to a string and store it
-    // localStorage.setItem(emailInput.value, JSON.stringify(userData));
-
-    // Clear fields
-    nameInput.value = '';
-    emailInput.value = '';
-    phoneInput.value = '';
-  }
-
 }
+
+// Call the function to fetch and display data when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', fetchAndDisplayData);
 
 function addUserToList(userData) {
   // Create a new list item with user details
   const li = document.createElement('li');
+  li.dataset.id = userData._id; // Set the id as a data attribute
+
   li.appendChild(document.createTextNode(`${userData.name}: ${userData.email}: ${userData.phone}`));
 
   const deleteButton = document.createElement('button');
@@ -84,44 +44,55 @@ function addUserToList(userData) {
   userList.appendChild(li);
 }
 
+// Listen for form submit
+myForm.addEventListener('submit', onSubmit);
+
+function onSubmit(e) {
+  e.preventDefault();
+
+  if (nameInput.value === '' || emailInput.value === '' || phoneInput.value === '') {
+    msg.classList.add('error');
+    msg.innerHTML = 'Please enter all fields';
+    setTimeout(() => msg.remove(), 3000);
+  } else {
+    const userData = {
+      name: nameInput.value,
+      email: emailInput.value,
+      phone: phoneInput.value,
+    };
+
+    axios
+      .post('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId', userData)
+      .then((res) => {
+        console.log(res);
+        addUserToList(res.data);
+      })
+      .catch((err) => console.log(err));
+
+    // Clear fields
+    nameInput.value = '';
+    emailInput.value = '';
+    phoneInput.value = '';
+  }
+}
+
 // Remove item
+userList.addEventListener('click', removeItem);
+
 function removeItem(e) {
   if (e.target.classList.contains('delete')) {
     if (confirm('Are You Sure?')) {
       var li = e.target.parentElement;
       userList.removeChild(li);
 
-      // Get the email from the list item's text content
-      const email = li.textContent.split(':')[1].trim();
+      const id = li.dataset.id;
 
-      // Remove the corresponding data from localStorage
-      localStorage.removeItem(email);
+      axios
+        .delete(`https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId/${id}`)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
     }
   }
 }
-
-// Remove item
-function editItem(e) {
-  if (e.target.classList.contains('edit')) {
-    var li = e.target.parentElement;
-    userList.removeChild(li);
-    // Get the email from the list item's text content
-    const email = li.textContent.split(':')[1].trim();
-     
-     // Call the function to populate input fields
-     dataFromLocalStorage(email);
-
-    // Remove the corresponding data from localStorage
-    localStorage.removeItem(email);
-  }
-}
-
-// // Function to populate input fields with data from local storage
-// function dataFromLocalStorage(email) {
-//   const userData = JSON.parse(localStorage.getItem(email));
-//   if (userData) {
-//     nameInput.value = userData.name;
-//     emailInput.value = userData.email;
-//     phoneInput.value = userData.phone;
-//   }
-// }
