@@ -6,6 +6,23 @@ const phoneInput = document.querySelector('#phone');
 const msg = document.querySelector('.msg');
 const userList = document.querySelector('#users');
 
+// Function to fetch and display data from the cloud
+function fetchAndDisplayData() {
+  axios
+    .get('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId')
+    .then((res) => {
+      const usersData = res.data;
+      for (const email in usersData) {
+        const userData = usersData[email];
+        addUserToList(userData);
+      }
+    })
+    .catch((err) => console.log(err));
+}
+
+// Call the function to fetch and display data when the page loads
+fetchAndDisplayData();
+
 // Listen for form submit
 myForm.addEventListener('submit', onSubmit);
 // Delete event
@@ -32,31 +49,17 @@ function onSubmit(e) {
       phone: phoneInput.value
     };
 
-    // Convert the object to a string and store it
-    localStorage.setItem(emailInput.value, JSON.stringify(userData));
+    axios
+    .post('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId',userData )
+    .then((res) => {
+      console.log(res);
+      addUserToList(userData);
+    })
+    .catch(err => console.log(err));
 
 
-    // Create a new list item with user details
-    const li = document.createElement('li');
-    li.appendChild(document.createTextNode(`${userData.name}: ${userData.email}: ${userData.phone}`));
-
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.className = 'delete';
-    li.appendChild(deleteButton);
-
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit';
-    editButton.className = 'edit';
-    li.appendChild(editButton);
-
-
-    // Add HTML
-    // li.innerHTML = `<strong>${nameInput.value}</strong>e: ${emailInput.value}`;
-
-    // Append to ul
-    userList.appendChild(li);
+    // // Convert the object to a string and store it
+    // localStorage.setItem(emailInput.value, JSON.stringify(userData));
 
     // Clear fields
     nameInput.value = '';
@@ -64,6 +67,23 @@ function onSubmit(e) {
     phoneInput.value = '';
   }
 
+}
+
+function addUserToList(userData) {
+  const li = document.createElement('li');
+  li.appendChild(document.createTextNode(`${userData.name}: ${userData.email}: ${userData.phone}`));
+
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
+  deleteButton.className = 'delete';
+  li.appendChild(deleteButton);
+
+  const editButton = document.createElement('button');
+  editButton.textContent = 'Edit';
+  editButton.className = 'edit';
+  li.appendChild(editButton);
+
+  userList.appendChild(li);
 }
 
 // Remove item
@@ -98,12 +118,12 @@ function editItem(e) {
   }
 }
 
-// Function to populate input fields with data from local storage
-function dataFromLocalStorage(email) {
-  const userData = JSON.parse(localStorage.getItem(email));
-  if (userData) {
-    nameInput.value = userData.name;
-    emailInput.value = userData.email;
-    phoneInput.value = userData.phone;
-  }
-}
+// // Function to populate input fields with data from local storage
+// function dataFromLocalStorage(email) {
+//   const userData = JSON.parse(localStorage.getItem(email));
+//   if (userData) {
+//     nameInput.value = userData.name;
+//     emailInput.value = userData.email;
+//     phoneInput.value = userData.phone;
+//   }
+// }
