@@ -9,7 +9,7 @@ const userList = document.querySelector('#users');
 // Function to fetch and display data from the cloud
 function fetchAndDisplayData() {
   axios
-    .get('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId')
+    .get('https://crudcrud.com/api/36880677b8994899a18613600c634fe4/appointmentId')
     .then((res) => {
       const usersData = res.data;
       for (var i = 0; i < res.data.length; i++) {
@@ -62,7 +62,7 @@ function onSubmit(e) {
     };
 
     axios
-      .post('https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId', userData)
+      .post('https://crudcrud.com/api/36880677b8994899a18613600c634fe4/appointmentId', userData)
       .then((res) => {
         console.log(res);
         addUserToList(res.data);
@@ -88,11 +88,66 @@ function removeItem(e) {
       const id = li.dataset.id;
 
       axios
-        .delete(`https://crudcrud.com/api/741d65fe67fd4725854772cda6847d88/appointmentId/${id}`)
+        .delete(`https://crudcrud.com/api/36880677b8994899a18613600c634fe4/appointmentId/${id}`)
         .then((res) => {
           console.log(res);
         })
         .catch((err) => console.log(err));
     }
   }
+}
+
+// Edit item 
+userList.addEventListener('click', editItem);
+
+function editItem(e) {
+  if (e.target.classList.contains('edit')) {
+    var li = e.target.parentElement;
+    userList.removeChild(li);
+    const id = li.dataset.id;
+    axios
+      .get(`https://crudcrud.com/api/36880677b8994899a18613600c634fe4/appointmentId/${id}`)
+      .then((res) => {
+        const list = res.data;
+        dataFromCloud(list);
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+
+  }
+}
+
+// fetch data from cloud
+function dataFromCloud(list) {
+  if (list) {
+    nameInput.value = list.name;
+    emailInput.value = list.email;
+    phoneInput.value = list.phone;
+
+    // Show the edit form
+    document.querySelector('#edit-form');
+  }
+}
+
+//edit user details
+function onEditSubmit(e) {
+  e.preventDefault();
+
+  const editedUserData = {
+    name: nameInput.value,
+    email: emailInput.value,
+    phone: phoneInput.value,
+  };
+
+  axios
+    .put(`https://crudcrud.com/api/36880677b8994899a18613600c634fe4/appointmentId/${editUserId}`, editedUserData)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => console.log(err));
+
+    // Clear fields
+    nameInput.value = '';
+    emailInput.value = '';
+    phoneInput.value = '';
 }
