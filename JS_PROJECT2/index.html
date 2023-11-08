@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Sales</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <form id="productForm" class="mt-4">
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" name="category" class="form-control">
+                <option value="electronics">Electronics</option>
+                <option value="skincare">Skincare</option>
+                <option value="food">Food</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" name="productName" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="productPrice">Price:</label>
+            <input type="number" id="productPrice" name="productPrice" class="form-control">
+        </div>
+        <input type="submit" class="btn btn-primary" value="Add Product">
+    </form>
+
+    <h2 class="mt-4">Product Lists</h2>
+    <ul id="electronicsList" class="list-group">
+        <li class="list-group-item"><strong>Electronics:</strong></li>
+    </ul>
+    <ul id="skincareList" class="list-group">
+        <li class="list-group-item"><strong>Skincare:</strong></li>
+    </ul>
+    <ul id="foodList" class="list-group">
+        <li class="list-group-item"><strong>Food:</strong></li>
+    </ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.js"
+        integrity="sha512-xWD36je/9YUjD4wYhpeuE/ZrfcMCtg4DKhu+dZKN3P7oEtC512t5n5wue9mTtcuygp5XZkj9Vd03dqbSPk+PcA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
